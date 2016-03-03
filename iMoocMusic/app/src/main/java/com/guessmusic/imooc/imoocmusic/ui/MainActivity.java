@@ -12,8 +12,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Toast;
 
 import com.guessmusic.imooc.imoocmusic.R;
+import com.guessmusic.imooc.imoocmusic.model.IWordButtonClickListener;
 import com.guessmusic.imooc.imoocmusic.model.WordButton;
 import com.guessmusic.imooc.imoocmusic.myui.MyGridView;
 
@@ -21,7 +23,7 @@ import java.util.ArrayList;
 
 import util.Util;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IWordButtonClickListener {
 
     private Animation mPanAnim;
     private LinearInterpolator mPanLin;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mMyGridView = (MyGridView) findViewById(R.id.gridview);
-
+        mMyGridView.registOnWordButtonClick(this);
         mViewWordsContainer = (LinearLayout) findViewById(R.id.word_select_container);
 
         mViewPan = (ImageView) findViewById(R.id.imageView1);
@@ -185,5 +187,10 @@ public class MainActivity extends AppCompatActivity {
             data.add(holder);
         }
         return data;
+    }
+
+    @Override
+    public void onWordButtonClick(WordButton wordButton) {
+        Toast.makeText(this, wordButton.mIndex + "", Toast.LENGTH_SHORT).show();
     }
 }

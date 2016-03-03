@@ -4,11 +4,14 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 
 import com.guessmusic.imooc.imoocmusic.R;
+import com.guessmusic.imooc.imoocmusic.model.IWordButtonClickListener;
 import com.guessmusic.imooc.imoocmusic.model.WordButton;
 
 import java.util.ArrayList;
@@ -24,6 +27,8 @@ public class MyGridView extends GridView {
     private ArrayList<WordButton> mArrayList = new ArrayList<>();
     private MyGridAdapter mAdapter;
     private Context mContext;
+    private Animation mScaleAnimation;
+    private IWordButtonClickListener mWordButtonListener;
 
     public MyGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -54,18 +59,34 @@ public class MyGridView extends GridView {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            WordButton holder;
+            final WordButton holder;
             if (convertView == null) {
                 convertView = Util.getView(mContext, R.layout.self_ui_gridview_item);
                 holder = mArrayList.get(position);
+
+                mScaleAnimation = AnimationUtils.loadAnimation(mContext, R.anim.scale);
+                mScaleAnimation.setStartOffset(position * 100);
+
+
                 holder.mIndex = position;
                 holder.mViewButton = (Button) convertView.findViewById(R.id.item_btn);
+                holder.mViewButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mWordButtonListener.onWordButtonClick(holder);
+                    }
+                });
                 convertView.setTag(holder);
             } else {
                 holder = (WordButton) convertView.getTag();
             }
             holder.mViewButton.setText(holder.mWordString);
+            convertView.startAnimation(mScaleAnimation);
             return convertView;
         }
+    }
+
+    public void registOnWordButtonClick(IWordButtonClickListener listener) {
+        mWordButtonListener = listener;
     }
 }

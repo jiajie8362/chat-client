@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.guessmusic.imooc.imoocmusic.R;
 import com.guessmusic.imooc.imoocmusic.data.Const;
@@ -69,12 +70,19 @@ public class MainActivity extends AppCompatActivity implements IWordButtonClickL
     private Song mCurrentSong;
     private int mCurrentStageIndex = -1;
 
+    private int mCurrentCoins = Const.TOTAL_COINS;
+    private TextView mViewCurrentCoins;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mMyGridView = (MyGridView) findViewById(R.id.gridview);
         mMyGridView.registOnWordButtonClick(this);
+
+        mViewCurrentCoins = (TextView) findViewById(R.id.txt_bar_coins);
+        mViewCurrentCoins.setText(mCurrentCoins + "");
+
         mViewWordsContainer = (LinearLayout) findViewById(R.id.word_select_container);
 
         mViewPan = (ImageView) findViewById(R.id.imageView1);
@@ -155,6 +163,127 @@ public class MainActivity extends AppCompatActivity implements IWordButtonClickL
         });
 
         initCurrentStageData();
+
+        handleDeleteWord();
+
+        handleTipAnswer();
+    }
+
+    private void handleTipAnswer() {
+        ImageButton button = (ImageButton) findViewById
+                (R.id.btn_tip_answer);
+        button.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                tipAnswer();
+            }
+        });
+    }
+
+    private WordButton findIsAnswerWord(int index) {
+        WordButton buf = null;
+
+        for (int i = 0; i < MyGridView.COUNTS_WORDS; i++) {
+            buf = mAllWords.get(i);
+
+            if (buf.mWordString.equals("" + mCurrentSong.getNameCharacters()[index])) {
+                return buf;
+            }
+        }
+
+        return null;
+    }
+
+    private void tipAnswer() {
+        boolean tipWord = false;
+        for (int i = 0; i < mBtnSelectWords.size(); i++) {
+            if (mBtnSelectWords.get(i).mWordString.length() == 0) {
+                // 根据当前的答案框条件选择对应的文字并填入
+                onWordButtonClick(findIsAnswerWord(i));
+
+                tipWord = true;
+
+                // 减少金币数量
+                if (!handleCoins(-getTipCoins())) {
+                    // 金币数量不够，显示对话框
+                    return;
+                }
+                break;
+            }
+        }
+
+        // 没有找到可以填充的答案
+        if (!tipWord) {
+            // 闪烁文字提示用户
+            sparkTheWrods();
+        }
+    }
+
+    private void handleDeleteWord() {
+        ImageButton button = (ImageButton) findViewById(R.id.btn_delete_word);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteOneWord();
+            }
+        });
+    }
+
+    private void deleteOneWord() {
+        if(!handleCoins(-getDeleteWordCoins())) {
+            return;
+        }
+        setButtonVisiable(findNotAnswerWord(), View.INVISIBLE);
+    }
+
+    private WordButton findNotAnswerWord() {
+        Random random = new Random();
+        WordButton buf = null;
+
+        while(true) {
+            int index = random.nextInt(MyGridView.COUNTS_WORDS);
+
+            buf = mAllWords.get(index);
+
+            if (buf.mIsVisiable && !isTheAnswerWord(buf)) {
+                return buf;
+            }
+        }
+    }
+
+    private boolean isTheAnswerWord(WordButton word) {
+        boolean result = false;
+
+        for (int i = 0; i < mCurrentSong.getNameLength(); i++) {
+            if (word.mWordString.equals
+                    ("" + mCurrentSong.getNameCharacters()[i])) {
+                result = true;
+
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    private int getDeleteWordCoins() {
+        return this.getResources().getInteger(R.integer.pay_delete_word);
+    }
+
+    private int getTipCoins() {
+        return this.getResources().getInteger(R.integer.pay_tip_answer);
+    }
+
+    private boolean handleCoins(int data) {
+        if (mCurrentCoins + data >= 0) {
+            mCurrentCoins += data;
+
+            mViewCurrentCoins.setText(mCurrentCoins + "");
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void handlePlayButton() {
@@ -252,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements IWordButtonClickL
     }
 
     private void handlePassEvent() {
-        mPassView = (LinearLayout)this.findViewById(R.id.pass_view);
+        mPassView = (LinearLayout) this.findViewById(R.id.pass_view);
         mPassView.setVisibility(View.VISIBLE);
     }
 
@@ -373,4 +502,6 @@ public class MainActivity extends AppCompatActivity implements IWordButtonClickL
         Timer timer = new Timer();
         timer.schedule(task, 1, 150);
     }
+
+
 }

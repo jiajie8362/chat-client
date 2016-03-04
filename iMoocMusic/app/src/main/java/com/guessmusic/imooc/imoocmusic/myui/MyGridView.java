@@ -22,6 +22,9 @@ import util.Util;
  * Created by jiajie on 16/3/3.
  */
 public class MyGridView extends GridView {
+    public final static String TAG = "MainActivity";
+
+
     public final static int COUNTS_WORDS = 24;
 
     private ArrayList<WordButton> mArrayList = new ArrayList<>();

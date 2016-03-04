@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.guessmusic.imooc.imoocmusic.R;
 import com.guessmusic.imooc.imoocmusic.data.Const;
@@ -24,10 +23,27 @@ import com.guessmusic.imooc.imoocmusic.myui.MyGridView;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import util.Util;
 
 public class MainActivity extends AppCompatActivity implements IWordButtonClickListener {
+    public final static int STATUS_ANSWER_RIGHT = 1;
+    // 过关界面
+    private View mPassView;
+    /**
+     * 答案状态 —— 错误
+     */
+    public final static int STATUS_ANSWER_WRONG = 2;
+
+    /**
+     * 答案状态 —— 不完整
+     */
+    public final static int STATUS_ANSWER_LACK = 3;
+
+    // 闪烁次数
+    public final static int SPASH_TIMES = 6;
 
     private Animation mPanAnim;
     private LinearInterpolator mPanLin;
@@ -199,11 +215,17 @@ public class MainActivity extends AppCompatActivity implements IWordButtonClickL
         ArrayList<WordButton> data = new ArrayList<>();
         for (int i = 0; i < mCurrentSong.getNameLength(); i++) {
             View view = Util.getView(MainActivity.this, R.layout.self_ui_gridview_item);
-            WordButton holder = new WordButton();
+            final WordButton holder = new WordButton();
             holder.mViewButton = (Button) view.findViewById(R.id.item_btn);
             holder.mViewButton.setTextColor(Color.WHITE);
             holder.mViewButton.setText("");
             holder.mIsVisiable = false;
+            holder.mViewButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clearTheAnswer(holder);
+                }
+            });
             holder.mViewButton.setBackgroundResource(R.drawable.game_wordblank);
             data.add(holder);
         }
@@ -212,7 +234,26 @@ public class MainActivity extends AppCompatActivity implements IWordButtonClickL
 
     @Override
     public void onWordButtonClick(WordButton wordButton) {
-        Toast.makeText(this, wordButton.mIndex + "", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, wordButton.mIndex + "", Toast.LENGTH_SHORT).show();
+        setSelectWord(wordButton);
+
+        int checkResult = checkTheAnswer();
+
+        if (checkResult == STATUS_ANSWER_RIGHT) {
+            handlePassEvent();
+        } else if (checkResult == STATUS_ANSWER_WRONG) {
+            sparkTheWrods();
+            ;
+        } else if (checkResult == STATUS_ANSWER_LACK) {
+            for (int i = 0; i < mBtnSelectWords.size(); i++) {
+                mBtnSelectWords.get(i).mViewButton.setTextColor(Color.WHITE);
+            }
+        }
+    }
+
+    private void handlePassEvent() {
+        mPassView = (LinearLayout)this.findViewById(R.id.pass_view);
+        mPassView.setVisibility(View.VISIBLE);
     }
 
     private String[] generateWords() {
@@ -263,5 +304,73 @@ public class MainActivity extends AppCompatActivity implements IWordButtonClickL
         }
 
         return str.charAt(0);
+    }
+
+    private void clearTheAnswer(WordButton wordButton) {
+        wordButton.mViewButton.setText("");
+        wordButton.mWordString = "";
+        wordButton.mIsVisiable = false;
+        setButtonVisiable(mAllWords.get(wordButton.mIndex), View.VISIBLE);
+    }
+
+    private void setSelectWord(WordButton wordButton) {
+        for (int i = 0; i < mBtnSelectWords.size(); i++) {
+            if (mBtnSelectWords.get(i).mWordString.length() == 0) {
+                mBtnSelectWords.get(i).mViewButton.setText(wordButton.mWordString);
+                mBtnSelectWords.get(i).mIsVisiable = true;
+                mBtnSelectWords.get(i).mWordString = wordButton.mWordString;
+                mBtnSelectWords.get(i).mIndex = wordButton.mIndex;
+                setButtonVisiable(wordButton, View.INVISIBLE);
+                break;
+            }
+        }
+    }
+
+    private void setButtonVisiable(WordButton button, int visibility) {
+        button.mViewButton.setVisibility(visibility);
+        button.mIsVisiable = (visibility == View.VISIBLE) ? true : false;
+    }
+
+    private int checkTheAnswer() {
+        for (int i = 0; i < mBtnSelectWords.size(); i++) {
+            if (mBtnSelectWords.get(i).mWordString.length() == 0) {
+                return STATUS_ANSWER_LACK;
+            }
+        }
+
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < mBtnSelectWords.size(); i++) {
+            sb.append(mBtnSelectWords.get(i).mWordString);
+        }
+        return (sb.toString().equals(mCurrentSong.getSongName())) ?
+                STATUS_ANSWER_RIGHT : STATUS_ANSWER_WRONG;
+    }
+
+    private void sparkTheWrods() {
+        TimerTask task = new TimerTask() {
+            boolean mChange = false;
+            int mSpardTimes = 0;
+
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (++mSpardTimes > SPASH_TIMES) {
+                            return;
+                        }
+
+                        for (int i = 0; i < mBtnSelectWords.size(); i++) {
+                            mBtnSelectWords.get(i).mViewButton.setTextColor(
+                                    mChange ? Color.RED : Color.WHITE
+                            );
+                        }
+                        mChange = !mChange;
+                    }
+                });
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, 1, 150);
     }
 }

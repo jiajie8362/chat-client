@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements IWordButtonClickL
     public final static int STATUS_ANSWER_RIGHT = 1;
     // 过关界面
     private View mPassView;
+    private TextView mViewTxtMainCoins;
     /**
      * 答案状态 —— 错误
      */
@@ -72,6 +73,11 @@ public class MainActivity extends AppCompatActivity implements IWordButtonClickL
 
     private int mCurrentCoins = Const.TOTAL_COINS;
     private TextView mViewCurrentCoins;
+
+    private TextView mCurrentStagePassView;
+
+    private TextView mCurrentStageView;
+    private TextView mCurrentSongNamePassView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -383,6 +389,23 @@ public class MainActivity extends AppCompatActivity implements IWordButtonClickL
     private void handlePassEvent() {
         mPassView = (LinearLayout) this.findViewById(R.id.pass_view);
         mPassView.setVisibility(View.VISIBLE);
+
+        mViewPan.clearAnimation();
+        mCurrentStagePassView = (TextView) findViewById(R.id.text_current_stage_pass);
+        if (mCurrentStagePassView != null) {
+            mCurrentStagePassView.setText((mCurrentStageIndex + 1) + "");
+        }
+
+        // ��ʾ��ǰ�ص�����
+        mCurrentSongNamePassView = (TextView) findViewById(R.id.text_current_song_name_pass);
+        if (mCurrentSongNamePassView != null) {
+            mCurrentSongNamePassView.setText(mCurretSong.getSongName());
+        }
+
+        mViewTxtMainCoins = (TextView) findViewById(R.id.txt_main_coins);
+        if(mViewTxtMainCoins != null){
+            mViewTxtMainCoins.setText((mCurrentCoins + 3) + "");
+        }
     }
 
     private String[] generateWords() {

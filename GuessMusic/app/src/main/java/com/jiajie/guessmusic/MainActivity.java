@@ -53,12 +53,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-
+                viewPanBar.startAnimation(barOutAnim);
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-                viewPanBar.startAnimation(barOutAnim);
+
             }
         });
 

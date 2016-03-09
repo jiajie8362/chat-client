@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GuessMusic</string>
+    <string name="title_activity_loading">GuessMusic</string>
+</resources>

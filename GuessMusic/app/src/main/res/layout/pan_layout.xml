@@ -3,13 +3,15 @@
     android:id="@+id/layout_pan"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:orientation="vertical"
     android:layout_marginTop="30dp"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:gravity="center">
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" >
 
         <ImageView
             android:layout_width="wrap_content"
@@ -20,14 +22,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Song"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:text="Music" />
+
     </FrameLayout>
 
     <FrameLayout
         android:layout_width="260dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" >
 
         <ImageView
             android:id="@+id/imageView1"
@@ -55,5 +58,8 @@
             android:layout_height="140dp"
             android:layout_gravity="right"
             android:src="@drawable/index_pin" />
+
     </FrameLayout>
+
+
 </LinearLayout>

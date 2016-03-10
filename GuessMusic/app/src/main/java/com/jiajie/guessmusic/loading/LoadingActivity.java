@@ -1,10 +1,9 @@
 package com.jiajie.guessmusic.loading;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.jiajie.guessmusic.MainActivity;
+import com.jiajie.guessmusic.MainActivity_;
 import com.jiajie.guessmusic.R;
 
 import java.util.Timer;
@@ -32,8 +31,7 @@ public class LoadingActivity extends AppCompatActivity {
     }
 
     private void startMain(){
-        Intent intent = new Intent(this, MainActivity.class);
-        this.startActivity(intent);
+        MainActivity_.intent(this).start();
     }
 
 }

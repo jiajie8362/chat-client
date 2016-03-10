@@ -9,6 +9,14 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.jiajie.guessmusic.http.ApiAddress;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+
+@EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
     private Animation panAnim;
     private LinearInterpolator panLin;
@@ -19,22 +27,25 @@ public class MainActivity extends AppCompatActivity {
     private Animation barOutAnim;
     private LinearInterpolator barOutLin;
 
+    @Bean
+    ApiAddress apiAddress;
 
-    private ImageButton btnPlayStart;
-    private ImageView viewPan;
-    private ImageView viewPanBar;
+    @ViewById
+    ImageButton btnPlayStart;
+    @ViewById
+    ImageView viewPan;
+    @ViewById
+    ImageView viewPanBar;
 
     private boolean isRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
-        setContentView(R.layout.activity_main);
-
-        viewPan = (ImageView) findViewById(R.id.imageView1);
-        viewPanBar = (ImageView) findViewById(R.id.imageView2);
-        btnPlayStart = (ImageButton) findViewById(R.id.btn_play_start);
+    @AfterViews
+    void init() {
         btnPlayStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -6,4 +6,5 @@ package com.jiajie.guessmusic.http;
 public class ApiRequest extends HttpRequest {
     public static final int RETRY_COUNT = 0;
 
+
 }

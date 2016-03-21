@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.facebook.FacebookSdk;
+import com.jiajie.guessmusic.GuessMusicApplication;
 import com.jiajie.guessmusic.MainActivity_;
 import com.jiajie.guessmusic.R;
-import com.jiajie.guessmusic.signin.SignInActivity_;
-import com.jiajie.guessmusic.signin.controllers.SignInController;
+import com.jiajie.guessmusic.models.UserController_;
 
 import org.androidannotations.annotations.EActivity;
 
@@ -23,11 +23,13 @@ public class LoadingActivity extends AppCompatActivity {
 
     private void init() {
         FacebookSdk.sdkInitialize(getApplicationContext());
-        if (SignInController.isSignIn()) {
-            MainActivity_.start(this);
-        } else {
-            SignInActivity_.start(this);
-        }
+        UserController_.getInstance_(GuessMusicApplication.applicationContext()).signIn("CAACEdEose0cBAB0bE0SqFI4ZB4kJ5CI0VprDyRRuL1eiIDoDMwXdAseIBVeq8mWEbNXJmHQwZC3JQnYHItr3NZB8gzid7UjlZB3ZBqzxCSqCdboOf3ozmY0ZBPJUy7jLevbMgf3CQ998fwJe3QMRqAOgDQOq9Mxs24bYJVw1I1jDtqmbF1Gv3MVq8jpjS3VbzpNqzuJ9IDWQZDZD");
+
+//        if (SignInController.isSignIn()) {
+            //MainActivity_.start(this);
+//        } else {
+//            SignInActivity_.start(this);
+//        }
     }
 
     private void startMain() {

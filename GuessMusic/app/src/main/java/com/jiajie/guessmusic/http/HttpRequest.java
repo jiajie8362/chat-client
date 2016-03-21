@@ -12,10 +12,22 @@ import java.io.IOException;
  */
 public class HttpRequest implements Callback{
     public static final boolean LOG_ENABLE = false;
+    public static final String LOG_TAG = "ApiLogX";
+    public static final String GET = "GET";
+    public static final String POST = "POST";
+    public static final String DELETE = "DELETE";
+    public static final String PUT = "PUT";
+    public static final String HEAD = "HEAD";
+    public static final String SEARCH = "SEARCH";
+    public static final String PATCH = "PATCH";
     public static final String TAG = HttpRequest.class.getSimpleName();
     public static OkHttpClient defaultHttpClient;
-
+    private HttpCallback callback;
     private OkHttpClient httpClient;
+
+    public interface HttpCallback {
+        void onResponse(HttpRequest request, HttpResponse response);
+    }
 
     protected OkHttpClient http() {
         if (httpClient == null) {
@@ -23,6 +35,11 @@ public class HttpRequest implements Callback{
         }
 
         return httpClient;
+    }
+
+    public HttpRequest callback(HttpCallback callback) {
+        this.callback = callback;
+        return this;
     }
 
     @Override

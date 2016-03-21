@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">GuessMusic</string>
     <string name="title_activity_loading">GuessMusic</string>
+    <string name="facebook_app_id">476868472450556</string>
 </resources>

@@ -19,7 +19,7 @@ public class HttpRequest implements Callback{
 
     protected OkHttpClient http() {
         if (httpClient == null) {
-            okHttpClient(defaultOkHttpClient().clone());
+            //okHttpClient(defaultOkHttpClient().clone());
         }
 
         return httpClient;

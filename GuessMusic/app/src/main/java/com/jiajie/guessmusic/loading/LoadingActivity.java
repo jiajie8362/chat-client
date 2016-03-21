@@ -3,34 +3,34 @@ package com.jiajie.guessmusic.loading;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.facebook.FacebookSdk;
 import com.jiajie.guessmusic.MainActivity_;
 import com.jiajie.guessmusic.R;
+import com.jiajie.guessmusic.signin.SignInActivity_;
+import com.jiajie.guessmusic.signin.controllers.SignInController;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import org.androidannotations.annotations.EActivity;
 
-
+@EActivity(R.layout.activity_loading)
 public class LoadingActivity extends AppCompatActivity {
     private final int START_MAIN_ACTIVITY = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_loading);
         init();
     }
 
     private void init() {
-        Timer timer = new Timer();
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                startMain();
-            }
-        };
-        timer.schedule(task,1000);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        if (SignInController.isSignIn()) {
+            MainActivity_.start(this);
+        } else {
+            SignInActivity_.start(this);
+        }
     }
 
-    private void startMain(){
+    private void startMain() {
         MainActivity_.intent(this).start();
     }
 

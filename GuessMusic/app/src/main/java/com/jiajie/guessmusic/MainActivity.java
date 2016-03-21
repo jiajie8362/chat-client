@@ -1,5 +1,7 @@
 package com.jiajie.guessmusic;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -131,4 +133,10 @@ public class MainActivity extends AppCompatActivity {
 
         viewPan.clearAnimation();
     }
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, MainActivity_.class);
+        context.startActivity(intent);
+    }
+
 }
